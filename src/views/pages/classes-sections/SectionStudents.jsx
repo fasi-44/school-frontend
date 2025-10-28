@@ -30,7 +30,10 @@ function SectionStudents() {
     const location = useLocation();
     const navigate = useNavigate();
     const theme = useTheme();
-    const { loggedUser } = useSelector((state) => state.globalState || {});
+    const { loggedUser, academicYear } = useSelector(state => ({
+        loggedUser: state.globalState?.loggedUser || null,
+        academicYear: state.globalState?.academicYear || null
+    }));
 
     const [students, setStudents] = useState([]);
     const [sections, setSections] = useState([]);
@@ -54,13 +57,13 @@ function SectionStudents() {
     useEffect(() => {
         fetchSectionStudents();
         fetchAvailableSections();
-    }, [params?.sectionId]);
+    }, [params?.sectionId, academicYear]);
 
     const fetchSectionStudents = async () => {
         try {
             setLoading(true);
             const response = await customAxios.get(
-                `${STUDENTS_API_BASE_URL}/list/inSection/${loggedUser?.skid}/${params?.sectionId}`
+                `${STUDENTS_API_BASE_URL}/list/inSection/${loggedUser?.skid}/${academicYear?.id}/${params?.sectionId}`
             );
             if (response.data.code === 200) {
                 setStudents(response.data.data || []);
@@ -340,6 +343,7 @@ function SectionStudents() {
                     sectionName={section?.section_name}
                     classId={classData?.id}
                     skid={loggedUser?.skid}
+                    academicYear={academicYear}
                     currentStudentIds={students.map(s => s.id)}
                     onStudentsAdded={fetchSectionStudents}
                 />

@@ -17,32 +17,18 @@ export default function Footer() {
       }}
     >
       <Typography variant="caption">
-        &copy; All rights reserved{' '}
-        <Typography component={Link} href="https://codedthemes.com/about-us/" underline="hover" target="_blank" color="secondary.main">
-          CodedThemes
+        &copy; All rights reserved, Powered by&nbsp;
+        <Typography component={Link} href="https://www.klopterz.com" underline="hover" target="_blank" color="secondary.main">
+          Klopterz Technology
         </Typography>
       </Typography>
       <Stack direction="row" sx={{ gap: 1.5, alignItems: 'center', justifyContent: 'space-between' }}>
-        <Link
-          component={RouterLink}
-          to="https://x.com/codedthemes"
-          underline="hover"
-          target="_blank"
-          variant="caption"
-          color="text.primary"
-        >
-          Twitter
-        </Link>
-        <Link
-          component={RouterLink}
-          to="https://discord.com/invite/p2E2WhCb6s"
-          underline="hover"
-          target="_blank"
-          variant="caption"
-          color="text.primary"
-        >
-          Discord
-        </Link>
+        <Typography variant="caption">
+          Developed by&nbsp;
+          <Typography component={Link} href="https://www.linkedin.com/in/mohammed-fasi-ulla-77926321b/" underline="hover" target="_blank" color="secondary.main">
+            Mohammed Fasi
+          </Typography>
+        </Typography>
       </Stack>
     </Stack>
   );

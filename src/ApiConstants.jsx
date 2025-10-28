@@ -14,4 +14,6 @@ export const TIME_TABLE_API_BASE_URL = "/timeTable";
 export const ROLES_API_BASE_URL = "/roles";
 export const USER_ROLES_API_BASE_URL = "/user-roles";
 export const FEES_API_BASE_URL = "/fee";
+export const ANNOUNCEMENT_API_BASE_URL = '/announcements';
+export const SCHOOL_ADMIN_DASHBOARD = '/schoolAdminDashboard';
 

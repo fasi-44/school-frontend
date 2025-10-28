@@ -38,6 +38,7 @@ const initialState = {
     loggedUser: null,
     authToken: null,
     isAuthenticated: false,
+    academicYear: null,
     loading: false,
     error: null,
 };
@@ -49,6 +50,10 @@ const authSlice = createSlice({
         // Clear error
         clearError: (state) => {
             state.error = null;
+        },
+        // Update global state (matches your pattern)
+        updateGlobalState(state, action) {
+            return { ...state, ...action?.payload };
         },
         // Reset auth state
         resetAuth: () => initialState,
@@ -66,6 +71,9 @@ const authSlice = createSlice({
                 state.authToken = action.payload.access_token;
                 state.isAuthenticated = true;
                 state.error = null;
+
+                // Set current academic year from login response
+                state.academicYear = action.payload.user?.current_academic_year || null;
             })
             .addCase(loginUser.rejected, (state, action) => {
                 state.loading = false;
@@ -84,5 +92,5 @@ const authSlice = createSlice({
     },
 });
 
-export const { clearError, updateLocation, resetAuth } = authSlice.actions;
+export const { clearError, updateGlobalState, resetAuth } = authSlice.actions;
 export default authSlice.reducer;

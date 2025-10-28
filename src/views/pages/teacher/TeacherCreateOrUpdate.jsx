@@ -12,6 +12,8 @@ import { TEACHERS_API_BASE_URL } from "../../../ApiConstants";
 import Loader from "../../../ui-component/Loader";
 import MandatoryIndicator from "../components/MandatoryIndicator";
 import { toast } from "react-toastify";
+import HeaderCard from "../../../ui-component/cards/HeaderCard";
+import { IconArrowLeft } from "@tabler/icons-react";
 
 
 export default function TeacherCreateOrUpdate() {
@@ -104,9 +106,26 @@ export default function TeacherCreateOrUpdate() {
         }
     };
 
+    const breadcrumbLinks = [
+        { title: 'Dashboard', to: '/dashboard' },
+        { title: 'Teacher List', to: '/teacher/list' },
+        {
+            title: (mode === 'update' ? "Update Teacher" : "Create Teacher"),
+            to: (mode === 'update' ? '/teacher/update' : '/teacher/create')
+        },
+    ];
+
     return (
         <>
             <Loader loading={loading} />
+            <HeaderCard
+                heading={mode === 'update' ? "Update Teacher" : "Create Teacher"}
+                breadcrumbLinks={breadcrumbLinks}
+                buttonColor={'primary'}
+                buttonvariant={'variant'}
+                onButtonClick={() => navigate(-1)}
+                buttonIcon={<IconArrowLeft color='white' />}
+            />
             <MainCard title={mode === 'update' ? "Update Teacher" : "Create Teacher"} >
                 <form onSubmit={handleSubmit}>
                     <Grid container rowSpacing={3} columnSpacing={2}>

@@ -29,9 +29,11 @@ import { generateReceiptFromPayment } from '../../../prints/receiptGenerator';
 const { Panel } = Collapse;
 
 const FeeCollection = () => {
-    const { loggedUser } = useSelector((state) => state.globalState || {});
+    const { loggedUser, academicYear } = useSelector(state => ({
+        loggedUser: state.globalState?.loggedUser || null,
+        academicYear: state.globalState?.academicYear || null
+    }));
     const [searchQuery, setSearchQuery] = useState('');
-    const [academicYear, setAcademicYear] = useState('2025-26');
     const [searchResults, setSearchResults] = useState([]);
     const [selectedStudent, setSelectedStudent] = useState(null);
     const [feeSummary, setFeeSummary] = useState(null);
@@ -63,7 +65,7 @@ const FeeCollection = () => {
             setLoading(true);
             const response = await customAxios.get(
                 `${FEES_API_BASE_URL}/search-student/${loggedUser?.skid}`,
-                { params: { q: searchQuery, academic_year: academicYear } }
+                { params: { q: searchQuery, academic_year_id: academicYear?.id } }
             );
 
             if (response.data.code === 200) {
@@ -96,7 +98,10 @@ const FeeCollection = () => {
         try {
             setLoading(true);
             const response = await customAxios.get(
-                `${FEES_API_BASE_URL}/summary/student/${loggedUser?.skid}/${userId}?academic_year=${academicYear}`
+                `${FEES_API_BASE_URL}/summary/student/${loggedUser?.skid}/${userId}`,
+                {
+                    params: { academic_year_id: academicYear?.id }
+                }
             );
 
             if (response.data.code === 200) {
@@ -483,20 +488,6 @@ const FeeCollection = () => {
                             />
                         </Stack>
                     </Grid>
-                    <Grid item xs={12} sm={3}>
-                        <Stack spacing={1}>
-                            <InputLabel sx={{ fontWeight: 600 }}>Academic Year</InputLabel>
-                            <Select
-                                fullWidth
-                                value={academicYear}
-                                onChange={(e) => setAcademicYear(e.target.value)}
-                            >
-                                <MenuItem value="2025-26">2025-26</MenuItem>
-                                <MenuItem value="2024-25">2024-25</MenuItem>
-                                <MenuItem value="2023-24">2023-24</MenuItem>
-                            </Select>
-                        </Stack>
-                    </Grid>
                     <Grid item xs={12} sm={4}>
                         <Stack direction="row" spacing={1.5}>
                             <Button
@@ -587,7 +578,7 @@ const FeeCollection = () => {
                                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
                                             <IconCalendar size={18} />
                                             <Typography variant="body2">
-                                                <strong>{academicYear}</strong>
+                                                <strong>{academicYear?.year_name}</strong>
                                             </Typography>
                                         </Box>
                                     </Grid>
@@ -646,7 +637,7 @@ const FeeCollection = () => {
                     </Typography>
                     {feeSummary.fees?.length === 0 ? (
                         <Alert severity="warning">
-                            No fees assigned to this student for {academicYear}
+                            No fees assigned to this student for {academicYear?.year_name}
                         </Alert>
                     ) : (
                         <Table

@@ -1,15 +1,16 @@
 // assets
 import {
-  IconTypography, IconPalette, IconShadow, IconWindmill,
+  IconTypography, IconPalette, IconShadow, IconWindmill, IconUser, IconUsers,
   IconPlus, IconList, IconListNumbers, IconUserPlus, IconUsersPlus,
-  IconSchool, IconBook, IconShieldBolt, IconCalendarTime, IconUserCheck, IconUsersGroup
+  IconSchool, IconBook, IconShieldBolt, IconCalendarTime, IconUserCheck, IconUsersGroup,
+  IconSpeakerphone
 } from '@tabler/icons-react';
 
 // constant
 const icons = {
-  IconTypography, IconPalette, IconShadow, IconWindmill, IconPlus, IconList,
+  IconTypography, IconPalette, IconShadow, IconWindmill, IconPlus, IconList, IconUser, IconUsers,
   IconListNumbers, IconUserPlus, IconUsersPlus, IconSchool, IconBook, IconShieldBolt, IconCalendarTime,
-  IconUserCheck, IconUsersGroup
+  IconUserCheck, IconUsersGroup, IconSpeakerphone
 };
 
 // ==============================|| UTILITIES MENU ITEMS ||============================== //
@@ -44,14 +45,14 @@ const utilities = {
       url: '/school/users/list',
       icon: icons.IconListNumbers,
       breadcrumbs: false,
-      roles: ['SUPER_ADMIN', 'SCHOOL_ADMIN'],
+      roles: ['SCHOOL_ADMIN'],
     },
     {
       id: 'teacher-management',
       title: 'Teachers',
       type: 'item',
       url: '/teacher/list',
-      icon: icons.IconUserPlus,
+      icon: icons.IconUser,
       breadcrumbs: false,
       roles: ['SCHOOL_ADMIN'],
     },
@@ -60,7 +61,7 @@ const utilities = {
       title: 'Students',
       type: 'item',
       url: '/student/list',
-      icon: icons.IconUsersPlus,
+      icon: icons.IconUsers,
       breadcrumbs: false,
       roles: ['SCHOOL_ADMIN'],
     },
@@ -73,7 +74,6 @@ const utilities = {
       breadcrumbs: false,
       roles: ['SCHOOL_ADMIN'],
     },
-
     {
       id: 'classes',
       title: 'Classes',
@@ -102,6 +102,15 @@ const utilities = {
       roles: ['SCHOOL_ADMIN'],
     },
     {
+      id: 'announcements',
+      title: 'Announcements',
+      type: 'item',
+      url: '/announcements/list',
+      icon: icons.IconSpeakerphone,
+      breadcrumbs: false,
+      roles: ['SCHOOL_ADMIN', 'TEACHER', 'STUDENT'],
+    },
+    {
       id: 'attendence-view',
       title: 'Attendence',
       type: 'item',
@@ -117,7 +126,7 @@ const utilities = {
       url: '/timetable/list',
       icon: icons.IconCalendarTime,
       breadcrumbs: false,
-      roles: ['SCHOOL_ADMIN'],
+      roles: ['SCHOOL_ADMIN', 'PRINCIPAL'],
     },
     {
       id: 'roles-and-permissions',

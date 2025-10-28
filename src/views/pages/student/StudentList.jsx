@@ -6,7 +6,7 @@ import { STUDENTS_API_BASE_URL } from '../../../ApiConstants';
 import customAxios from '../../../utils/axiosConfig';
 import { useSelector } from 'react-redux';
 import {
-    Divider,  IconButton,
+    Divider, IconButton,
     ListItemIcon, ListItemText, Menu, MenuItem, Tooltip
 } from '@mui/material';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
@@ -17,14 +17,16 @@ import Loader from '../../../ui-component/Loader';
 
 const StudentsList = () => {
     const navigate = useNavigate();
-    const { loggedUser } = useSelector((state) => state.globalState || {});
+    const { loggedUser, academicYear } = useSelector(state => ({
+        loggedUser: state.globalState?.loggedUser || null,
+        academicYear: state.globalState?.academicYear || null
+    }));
     const [studentList, setStudentList] = useState([]);
     const [loading, setLoading] = useState(false);
     const [menuAnchorEl, setMenuAnchorEl] = useState(null);
     const [menuRowData, setMenuRowData] = useState(null);
     const [viewStudentDetailsDialog, setViewStudentDetailsDialog] = useState(false);
     const [selectedStudent, setSelectedStudent] = useState(null);
-    const labelStyle = { fontWeight: 600, color: 'gray' };
 
     const columns = [
         {
@@ -88,12 +90,12 @@ const StudentsList = () => {
 
     useEffect(() => {
         fetchStudents();
-    }, [])
+    }, [academicYear])
 
     const fetchStudents = async () => {
         try {
             setLoading(true);
-            const resp = await customAxios.get(STUDENTS_API_BASE_URL + '/list/' + loggedUser?.skid);
+            const resp = await customAxios.get(STUDENTS_API_BASE_URL + '/list/' + loggedUser?.skid + "/" + academicYear?.id);
             if (resp?.data?.code === 200 && resp?.data?.status === 'success') {
                 setStudentList(resp?.data.students)
             }

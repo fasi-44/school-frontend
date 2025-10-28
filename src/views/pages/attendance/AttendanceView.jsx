@@ -25,12 +25,17 @@ import Loader from '../../../ui-component/Loader';
 import SingleDayView from './SingleDayView';
 import MonthlyView from './MonthlyView';
 import { labelStyles } from '../../../AppConstants';
+import HeaderCard from '../../../ui-component/cards/HeaderCard';
+import { IconPlus } from '@tabler/icons-react';
 
 const { RangePicker } = DatePicker;
 
 const AttendanceView = () => {
     const navigate = useNavigate();
-    const { loggedUser } = useSelector((state) => state.globalState || {});
+    const { loggedUser, academicYear } = useSelector(state => ({
+        loggedUser: state.globalState?.loggedUser || null,
+        academicYear: state.globalState?.academicYear || null
+    }));
 
     // State management
     const [classes, setClasses] = useState([]);
@@ -57,6 +62,15 @@ const AttendanceView = () => {
             fetchSections();
         }
     }, [selectedClass]);
+
+    useEffect(() => {
+        if (viewType === 'single' && selectedClass && selectedSection && selectedDate) {
+            fetchSingleDayAttendance();
+        }
+        if (viewType !== 'single' && selectedClass && selectedSection && selectedDate) {
+            fetchMonthlyAttendance();
+        }
+    }, [academicYear])
 
     const fetchClasses = async () => {
         try {
@@ -99,7 +113,7 @@ const AttendanceView = () => {
         setLoading(true);
         try {
             const formattedDate = selectedDate.format('YYYY-MM-DD');
-            const response = await customAxios.get(`${ATTENDANCE_API_BASE_URL}/view/${loggedUser?.skid}`, {
+            const response = await customAxios.get(`${ATTENDANCE_API_BASE_URL}/view/${loggedUser?.skid}/${academicYear?.id}`, {
                 params: {
                     class_id: selectedClass,
                     section_id: selectedSection,
@@ -134,7 +148,7 @@ const AttendanceView = () => {
 
         setLoading(true);
         try {
-            const response = await customAxios.get(`${ATTENDANCE_API_BASE_URL}/monthly/${loggedUser?.skid}`, {
+            const response = await customAxios.get(`${ATTENDANCE_API_BASE_URL}/monthly/${loggedUser?.skid}/${academicYear?.id}`, {
                 params: {
                     class_id: selectedClass,
                     section_id: selectedSection,
@@ -178,23 +192,24 @@ const AttendanceView = () => {
         setStatistics(null);
     };
 
+    const breadcrumbLinks = [
+        { title: 'Dashboard', to: '/dashboard' },
+        { title: 'View Attendance Records', to: '/attendance/view' },
+    ];
+
     return (
         <>
-            <MainCard
-                title="View Attendance Records"
-                secondary={
-                    <Button
-                        variant="contained"
-                        startIcon={<AddIcon />}
-                        onClick={handleAddAttendance}
-                        size="small"
-                    >
-                        Mark Attendance
-                    </Button>
-                }
-            >
-                <Loader loading={loading} />
-
+            <Loader loading={loading} />
+            <HeaderCard
+                heading={'View Attendance Records'}
+                breadcrumbLinks={breadcrumbLinks}
+                buttonColor={'primary'}
+                buttonvariant={'contained'}
+                buttonText="Mark Attendance"
+                onButtonClick={() => navigate('/attendance/mark')}
+                buttonIcon={<IconPlus size={20} />}
+            />
+            <MainCard>
                 {/* Filters Section */}
                 <Grid container spacing={2} sx={{ mb: 3 }} alignItems="flex-end">
                     <Grid item size={{ xl: 2, lg: 2, md: 4, sm: 6, xs: 12 }}>

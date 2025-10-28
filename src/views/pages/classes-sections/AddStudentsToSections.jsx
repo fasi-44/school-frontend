@@ -17,6 +17,7 @@ function AddStudentsToSections({
     sectionName,
     classId,
     skid,
+    academicYear,
     currentStudentIds = [],
     onStudentsAdded
 }) {
@@ -39,7 +40,7 @@ function AddStudentsToSections({
         try {
             setLoading(true);
             const response = await customAxios.get(
-                `${STUDENTS_API_BASE_URL}/list/${skid}`
+                `${STUDENTS_API_BASE_URL}/list/${skid}/${academicYear?.id}`
             );
             if (response.data.code === 200) {
                 const allStudents = response.data.students || [];

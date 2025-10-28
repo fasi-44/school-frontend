@@ -126,29 +126,36 @@ export const generateTimetablePdf = async (timetableData, schoolData, action = '
                     row.push({
                         stack: [
                             {
-                                text: entry.subject.subject_name,
-                                fontSize: 9,
-                                bold: true,
-                                color: '#667eea',
-                                margin: [0, 0, 0, 2]
-                            },
-                            {
-                                text: `(${entry.subject.subject_code})`,
-                                fontSize: 7,
-                                color: '#666666',
+                                text: [
+                                    {
+                                        text: entry.subject.subject_name,
+                                        fontSize: 10,
+                                        bold: true,
+                                        color: '#667eea'
+                                    },
+                                    {
+                                        text: ` (${entry.subject.subject_code})`,
+                                        fontSize: 8,
+                                        color: '#666666'
+                                    }
+                                ],
                                 margin: [0, 0, 0, 3]
                             },
                             {
-                                text: `${entry.teacher.first_name} ${entry.teacher.last_name}`,
-                                fontSize: 8,
-                                margin: [0, 0, 0, 2]
-                            },
-                            entry.room ? {
-                                text: `Room: ${entry.room}`,
-                                fontSize: 7,
-                                color: '#666666',
-                                italics: true
-                            } : {}
+                                text: [
+                                    {
+                                        text: `${entry.teacher.first_name} ${entry.teacher.last_name}`,
+                                        fontSize: 9
+                                    },
+                                    entry.room ? {
+                                        text: ` • Room: ${entry.room}`,
+                                        fontSize: 7,
+                                        color: '#666666',
+                                        italics: true
+                                    } : {}
+                                ],
+                                margin: [0, 0, 0, 0]
+                            }
                         ],
                         margin: [3, 3, 3, 3],
                         alignment: 'left'

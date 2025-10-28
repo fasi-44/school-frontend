@@ -17,6 +17,7 @@ import {
   // IconArrowsMaximize,
   IconMenu2
 } from '@tabler/icons-react';
+import ChangeAcademicYear from '../../../views/pages/authentication/ChangeAcademicYear';
 // import { useFullscreen } from '../../../contexts/FullScreenContext';
 
 // ==============================|| MAIN NAVBAR / HEADER ||============================== //
@@ -89,6 +90,7 @@ export default function Header() {
       {/* <NotificationSection /> */}
 
       {/* profile */}
+      <ChangeAcademicYear />
       <ProfileSection />
     </>
   );

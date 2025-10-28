@@ -36,7 +36,10 @@ const TimetableList = () => {
     const [printData, setPrintData] = useState(null);
     const [menuAnchorEl, setMenuAnchorEl] = useState(null);
     const [menuRowData, setMenuRowData] = useState(null);
-    const { loggedUser } = useSelector((state) => state.globalState || {});
+    const { loggedUser, academicYear } = useSelector(state => ({
+        loggedUser: state.globalState?.loggedUser || null,
+        academicYear: state.globalState?.academicYear || null
+    }));
 
     const columns = [
         {
@@ -62,17 +65,17 @@ const TimetableList = () => {
             key: 'section_name',
             sorter: (a, b) => a.section_name.localeCompare(b.section_name),
         },
-        {
-            title: 'Academic Year',
-            dataIndex: 'academic_year',
-            key: 'academic_year',
-            sorter: (a, b) => a.academic_year.localeCompare(b.academic_year),
-        },
+        // {
+        //     title: 'Academic Year',
+        //     dataIndex: 'academic_year',
+        //     key: 'academic_year',
+        //     sorter: (a, b) => a.academic_year.localeCompare(b.academic_year),
+        // },
         {
             title: 'Semester',
             dataIndex: 'semester',
             key: 'semester',
-            width: 100,
+            // width: 100,
             render: (semester) => `Sem ${semester}`,
             sorter: (a, b) => a.semester - b.semester,
         },
@@ -80,7 +83,7 @@ const TimetableList = () => {
             title: 'Status',
             dataIndex: 'is_draft',
             key: 'is_draft',
-            width: 100,
+            // width: 100,
             render: (is_draft) => (
                 <Tag color={is_draft ? 'orange' : 'green'}>
                     {is_draft ? 'Draft' : 'Final'}
@@ -96,7 +99,7 @@ const TimetableList = () => {
             title: 'Created At',
             dataIndex: 'created_at',
             key: 'created_at',
-            width: 160,
+            // width: 160,
             render: (date) => dayjs(date).format('DD MMM YYYY, HH:mm'),
             sorter: (a, b) => new Date(a.created_at) - new Date(b.created_at),
         },
@@ -117,12 +120,12 @@ const TimetableList = () => {
 
     useEffect(() => {
         fetchTimetables();
-    }, []);
+    }, [academicYear]);
 
     const fetchTimetables = async () => {
         setLoading(true);
         try {
-            const response = await customAxios.get(`${TIME_TABLE_API_BASE_URL}/list/${loggedUser?.skid}`);
+            const response = await customAxios.get(`${TIME_TABLE_API_BASE_URL}/list/${loggedUser?.skid}/${academicYear?.id}`);
             if (response.data.code === 200 && response.data.status === 'success') {
                 const timetableData = response.data.timetables || response.data.data || [];
                 setTimetables(timetableData);

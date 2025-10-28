@@ -3,24 +3,28 @@ import { useNavigate } from 'react-router';
 import { IconPlus } from '@tabler/icons-react';
 import TeachersList from './TeachersList';
 import { Button, Fade } from '@mui/material';
+import HeaderCard from '../../../ui-component/cards/HeaderCard';
 
 const TeacherManagement = () => {
     const navigate = useNavigate();
 
-    const createTeacher = () => {
-        navigate('/teacher/create');
-    }
+    const breadcrumbLinks = [
+        { title: 'Dashboard', to: '/dashboard' },
+        { title: 'Teacher List', to: '/teacher/list' },
+    ];
 
     return (
         <>
-            <MainCard
-                title={'School Teachers List'}
-                secondary={
-                    <Button onClick={createTeacher} variant="contained" color="primary" size='small' startIcon={<IconPlus />}>
-                        Create Teacher
-                    </Button>
-                }
-            >
+            <HeaderCard
+                heading={'Teachers List'}
+                breadcrumbLinks={breadcrumbLinks}
+                buttonColor={'primary'}
+                buttonvariant={'contained'}
+                buttonText="Create Teacher"
+                onButtonClick={() => navigate('/teacher/create')}
+                buttonIcon={<IconPlus size={20} />}
+            />
+            <MainCard>
                 <TeachersList />
             </MainCard>
         </>

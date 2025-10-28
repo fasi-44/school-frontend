@@ -1,9 +1,9 @@
 // assets
-import { IconKey } from '@tabler/icons-react';
+import { IconKey, IconTransactionRupee, IconReceiptRupee } from '@tabler/icons-react';
 
 // constant
 const icons = {
-  IconKey
+  IconKey, IconTransactionRupee, IconReceiptRupee
 };
 
 // ==============================|| EXTRA PAGES MENU ITEMS ||============================== //
@@ -20,7 +20,7 @@ const fees = {
       title: 'Fee Structures',
       type: 'item',
       url: '/fee/structures',
-      icon: icons.IconPlus,
+      icon: icons.IconTransactionRupee,
       breadcrumbs: false,
       roles: ['SUPER_ADMIN', 'SCHOOL_ADMIN'],
     },
@@ -38,7 +38,7 @@ const fees = {
       title: 'Fee Collection',
       type: 'item',
       url: '/fee/collection',
-      icon: icons.IconPlus,
+      icon: icons.IconReceiptRupee,
       breadcrumbs: false,
       roles: ['SUPER_ADMIN', 'SCHOOL_ADMIN'],
     },

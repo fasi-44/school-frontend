@@ -12,6 +12,9 @@ import FeeStructureCreate from '../views/pages/fees/FeeStructureCreate';
 import AttendanceView from '../views/pages/attendance/AttendanceView';
 import TimetableView from '../views/pages/timetable/TimetableView';
 import TimetableEdit from '../views/pages/timetable/TimetableEdit';
+import SchoolAdminDashboard from '../views/dashboard/SchoolAdminDashboard';
+import AnnouncementList from '../views/pages/notices/AnnouncementList';
+import CreateAnnouncement from '../views/pages/notices/CreateAnnouncement';
 
 // dashboard routing
 const DashboardDefault = Loadable(lazy(() => import('views/dashboard/Default')));
@@ -43,7 +46,7 @@ const MainRoutes = {
   children: [
     {
       path: 'dashboard',
-      element: <DashboardDefault />
+      element: <SchoolAdminDashboard />
     },
     // {
     //   path: 'dashboard',
@@ -122,6 +125,14 @@ const MainRoutes = {
     {
       path: "/teacher-subjects",
       element: <TeacherSubject />
+    },
+    {
+      path: "/announcements/list",
+      element: <AnnouncementList />
+    },
+    {
+      path: "/announcements/create",
+      element: <CreateAnnouncement />
     },
     {
       path: "/school/users/list",

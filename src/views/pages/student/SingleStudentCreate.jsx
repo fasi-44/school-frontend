@@ -18,8 +18,11 @@ import ParentSection from "./ParentSection";
 export default function SingleStudentCreate({ mode = 'create', studentData = {}, navigate }) {
     const theme = useTheme();
     const params = useParams();
+    const { loggedUser, academicYear } = useSelector(state => ({
+        loggedUser: state.globalState?.loggedUser || null,
+        academicYear: state.globalState?.academicYear || null
+    }));
     const [loading, setLoading] = useState(false);
-    const { loggedUser } = useSelector((state) => state.globalState || {});
     const [classes, setClasses] = useState([]);
     const [selectedClass, setSelectedClass] = useState(null);
     const [sections, setSections] = useState({});
@@ -256,7 +259,11 @@ export default function SingleStudentCreate({ mode = 'create', studentData = {},
                     navigate('/student/list');
                 }
             } else {
-                resp = await customAxios.post(STUDENTS_API_BASE_URL + '/create/' + loggedUser?.skid, formData);
+                const payload = {
+                    ...formData,
+                    academic_year_id: academicYear?.id
+                };
+                resp = await customAxios.post(STUDENTS_API_BASE_URL + '/create/' + loggedUser?.skid, payload);
 
                 if (resp.data.code === 200 && resp.data.status === 'success') {
                     const studentUserId = resp.data.student.school_user_id;

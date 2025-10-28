@@ -249,7 +249,7 @@ export default function Breadcrumbs({
     // main
     if (item?.breadcrumbs !== false || custom) {
       breadcrumbContent = (
-        <Card sx={card === false ? { mb: 3, bgcolor: 'transparent', ...sx } : { mb: 3, bgcolor: 'background.default', ...sx }} {...others}>
+        <Card sx={card === false ? { mb: -1, bgcolor: 'transparent', ...sx } : { mb: 3, bgcolor: 'background.default', ...sx }} {...others}>
           <Box sx={{ p: 1.25, px: card === false ? 0 : 2 }}>
             <Grid
               container

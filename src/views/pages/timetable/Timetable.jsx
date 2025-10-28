@@ -80,7 +80,10 @@ const steps = ['Configuration', 'Generate Time Slots', 'Create Timetable', 'Vali
 
 export default function Timetable() {
     const theme = useTheme();
-    const { loggedUser } = useSelector((state) => state.globalState || {});
+    const { loggedUser, academicYear } = useSelector(state => ({
+        loggedUser: state.globalState?.loggedUser || null,
+        academicYear: state.globalState?.academicYear || null
+    }));
     const navigate = useNavigate();
 
     // Stepper state
@@ -89,7 +92,6 @@ export default function Timetable() {
     // Basic configuration states
     const [selectedClass, setSelectedClass] = useState("");
     const [selectedSection, setSelectedSection] = useState("");
-    const [academicYear, setAcademicYear] = useState("2024-25");
     const [semester, setSemester] = useState("1");
     const [periodDuration, setPeriodDuration] = useState(45);
     const [schoolStartTime, setSchoolStartTime] = useState("09:00");
@@ -244,7 +246,7 @@ export default function Timetable() {
                 day: day,
                 start_time: startTime,
                 end_time: endTime,
-                academic_year: academicYear,
+                academic_year_id: academicYear?.id,
                 semester: semester,
                 exclude_timetable_id: existingTimetable?.id
             };
@@ -264,7 +266,7 @@ export default function Timetable() {
                     skid: loggedUser.skid,
                     class_id: selectedClass,
                     section_id: selectedSection,
-                    academic_year: academicYear,
+                    academic_year_id: academicYear?.id,
                     semester: semester
                 }
             });
@@ -337,7 +339,7 @@ export default function Timetable() {
                 skid: loggedUser.skid,
                 class_id: selectedClass,
                 section_id: selectedSection,
-                academic_year: academicYear,
+                academic_year_id: academicYear?.id,
                 semester: semester,
                 entries: transformedEntries,
             };
@@ -493,7 +495,7 @@ export default function Timetable() {
                 skid: loggedUser.skid,
                 class_id: selectedClass,
                 section_id: selectedSection,
-                academic_year: academicYear,
+                academic_year_id: academicYear?.id,
                 semester: semester,
                 period_duration: periodDuration,
                 school_start_time: schoolStartTime,
@@ -684,7 +686,7 @@ export default function Timetable() {
                                     </Select>
                                 </Stack>
                             </Grid>
-                            <Grid item size={{ xl: 3, lg: 3, md: 6, sm: 12, xs: 12 }}>
+                            {/* <Grid item size={{ xl: 3, lg: 3, md: 6, sm: 12, xs: 12 }}>
                                 <Stack spacing={1}>
                                     <InputLabel htmlFor="academic_year">Academic Year</InputLabel>
                                     <OutlinedInput
@@ -704,7 +706,7 @@ export default function Timetable() {
                                         disabled={mode === 'view' && !isDraft}
                                     />
                                 </Stack>
-                            </Grid>
+                            </Grid> */}
                             <Grid item size={{ xl: 3, lg: 3, md: 6, sm: 12, xs: 12 }}>
                                 <Stack spacing={1}>
                                     <InputLabel>Semester</InputLabel>

@@ -5,8 +5,8 @@ import { Table, Tag, Space } from 'antd';
 import {
     Box, Typography, IconButton, Dialog, DialogTitle, DialogContent,
     Button, Grid, FormControl, InputLabel, Select, MenuItem,
-    // Card,
-    // CardContent
+    Card,
+    CardContent
 } from '@mui/material';
 import {
     IconPlus, IconEdit, IconTrash, IconCurrencyRupee, IconEye
@@ -18,25 +18,33 @@ import MainCard from '../../../ui-component/cards/MainCard';
 import { CLASSES_API_BASE_URL, FEES_API_BASE_URL } from '../../../ApiConstants';
 import customAxios from '../../../utils/axiosConfig';
 import Loader from '../../../ui-component/Loader';
+import Breadcrumbs from '../../../ui-component/extended/Breadcrumbs';
+import HeaderCard from '../../../ui-component/cards/HeaderCard';
 
 const FeeStructureList = () => {
-    const { loggedUser } = useSelector((state) => state.globalState || {});
+    const { loggedUser, academicYear } = useSelector(state => ({
+        loggedUser: state.globalState?.loggedUser || null,
+        academicYear: state.globalState?.academicYear || null
+    }));
     const navigate = useNavigate();
     const [groupedFees, setGroupedFees] = useState([]);
     const [loading, setLoading] = useState(false);
-    const [selectedAcademicYear, setSelectedAcademicYear] = useState('2025-26');
     const [viewDialogOpen, setViewDialogOpen] = useState(false);
     const [selectedClassFees, setSelectedClassFees] = useState([]);
 
     useEffect(() => {
         fetchGroupedFeeStructures();
-    }, [selectedAcademicYear]);
+    }, [academicYear]);
 
     const fetchGroupedFeeStructures = async () => {
         try {
             setLoading(true);
+            const params = {
+                academic_year_id: academicYear?.id
+            };
             const response = await customAxios.get(
-                `${FEES_API_BASE_URL}/structure/list/${loggedUser?.skid}?academic_year=${selectedAcademicYear}`
+                `${FEES_API_BASE_URL}/structure/list/${loggedUser?.skid}`,
+                { params }
             );
 
             if (response.data.code === 200) {
@@ -222,56 +230,28 @@ const FeeStructureList = () => {
         },
     ];
 
+    const breadcrumbLinks = [
+        { title: 'Dashboard', to: '/dashboard' },
+        { title: 'Fee Structures', to: '/fee/structures' },
+    ];
+
     return (
         <Box>
+
             <Loader loading={loading} />
-            {/* <Card sx={{ mb: 3, background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}>
-                <CardContent>
-                    <Typography variant="h4" fontWeight="600" color="white">
-                        Fee Assignment
-                    </Typography>
-                    <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.9)', mt: 1 }}>
-                        Assign fees to students individually or in bulk
-                    </Typography>
-                </CardContent>
-            </Card> */}
+            <HeaderCard
+                heading="Fee Assignment"
+                breadcrumbLinks={breadcrumbLinks}
+                buttonColor={'primary'}
+                buttonvariant={'contained'}
+                buttonText="Create Fee Structure"
+                onButtonClick={() => navigate('/fee/structure/create')}
+                buttonIcon={<IconPlus size={20} />}
+            />
 
             {/* Header */}
-            <MainCard
-                title="Fee Structure Management"
-                secondary={
-                    <Button
-                        variant="contained"
-                        startIcon={<IconPlus size={20} />}
-                        onClick={() => navigate('/fee/structure/create')}
-                    >
-                        Create Fee Structure
-                    </Button>
-                }
-                sx={{ mb: 3 }}
-            >
-                <Grid container spacing={2} alignItems="center">
-                    <Grid item xs={12} sm={6} md={3}>
-                        <FormControl fullWidth size="small">
-                            <InputLabel>Academic Year</InputLabel>
-                            <Select
-                                value={selectedAcademicYear}
-                                onChange={(e) => setSelectedAcademicYear(e.target.value)}
-                                label="Academic Year"
-                            >
-                                <MenuItem value="2025-26">2025-26</MenuItem>
-                                <MenuItem value="2024-25">2024-25</MenuItem>
-                                <MenuItem value="2023-24">2023-24</MenuItem>
-                            </Select>
-                        </FormControl>
-                    </Grid>
-                    <Grid item xs={12} sm={6} md={9}>
-                        <Typography variant="body2" color="text.secondary">
-                            Showing {groupedFees.length} class fee structure(s) for {selectedAcademicYear}
-                        </Typography>
-                    </Grid>
-                </Grid>
-                <br />
+            <MainCard>
+                {/* <br /> */}
                 <Table
                     columns={columns}
                     dataSource={groupedFees}

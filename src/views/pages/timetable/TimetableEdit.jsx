@@ -55,7 +55,10 @@ const TimetableEdit = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const location = useLocation();
-    const { loggedUser } = useSelector((state) => state.globalState || {});
+    const { loggedUser, academicYear } = useSelector(state => ({
+        loggedUser: state.globalState?.loggedUser || null,
+        academicYear: state.globalState?.academicYear || null
+    }));
 
     // State
     const [timetable, setTimetable] = useState(null);
@@ -215,6 +218,11 @@ const TimetableEdit = () => {
         setCurrentEntry({ subject: null, teacher: '', room: '', type: 'Regular' });
     };
 
+    const getAvailableTeachersForSubject = (subject) => {
+        if (!subject) return [];
+        return subject.teachers || [];
+    };
+
     const handleSaveEntry = async () => {
         if (!currentEntry.subject || !currentEntry.teacher) {
             showSnackbar('Please select both subject and teacher', 'error');
@@ -280,7 +288,7 @@ const TimetableEdit = () => {
                     day: day,
                     start_time: startTime,
                     end_time: endTime,
-                    academic_year: timetable.academic_year,
+                    academic_year_id: academicYear?.id,
                     semester: timetable.semester,
                     exclude_timetable_id: timetable.id
                 }
@@ -309,7 +317,7 @@ const TimetableEdit = () => {
                 `${TIME_TABLE_API_BASE_URL}/validate-conflicts`,
                 {
                     skid: loggedUser.skid,
-                    academic_year: timetable.academic_year,
+                    academic_year_id: academicYear?.id,
                     semester: timetable.semester,
                     entries: transformedEntries,
                     exclude_timetable_id: timetable.id
@@ -355,7 +363,7 @@ const TimetableEdit = () => {
                 skid: loggedUser.skid,
                 class_id: timetable.class_id,
                 section_id: timetable.section_id,
-                academic_year: timetable.academic_year,
+                academic_year_id: academicYear?.id,
                 semester: timetable.semester,
                 period_duration: timetable.configuration.period_duration,
                 school_start_time: timetable.configuration.school_start_time,
@@ -511,7 +519,7 @@ const TimetableEdit = () => {
                         Edit Timetable
                     </Typography>
                     {timetable?.is_draft && (
-                        <Chip label="DRAFT" color="warning" />
+                        <Chip label="DRAFT" color="secondary" />
                     )}
                 </Box>
 
@@ -527,7 +535,7 @@ const TimetableEdit = () => {
                     </Button>
                     <Button
                         variant="outlined"
-                        color="warning"
+                        color="primary"
                         startIcon={<DraftIcon />}
                         onClick={() => handleSaveTimetable(true)}
                         disabled={savingDraft}
@@ -572,7 +580,7 @@ const TimetableEdit = () => {
                         </Grid>
                         <Grid item xs={12} sm={3}>
                             <Typography variant="caption" color="text.secondary">Academic Year</Typography>
-                            <Typography variant="h6">{timetable?.academic_year}</Typography>
+                            <Typography variant="h6">{timetable?.academic_year_id}</Typography>
                         </Grid>
                         <Grid item xs={12} sm={3}>
                             <Typography variant="caption" color="text.secondary">Semester</Typography>
@@ -675,7 +683,7 @@ const TimetableEdit = () => {
                             label="Teacher *"
                             required
                         >
-                            {teachers.map((teacher) => (
+                            {getAvailableTeachersForSubject(currentEntry.subject)?.map((teacher) => (
                                 <MenuItem key={teacher.id} value={teacher.id}>
                                     {teacher.first_name} {teacher.last_name}
                                 </MenuItem>

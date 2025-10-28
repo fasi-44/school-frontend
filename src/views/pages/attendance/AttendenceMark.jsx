@@ -24,6 +24,7 @@ import { ATTENDANCE_API_BASE_URL, CLASSES_API_BASE_URL, STUDENTS_API_BASE_URL } 
 import { useSelector } from 'react-redux';
 import Loader from '../../../ui-component/Loader';
 import { IconArrowLeft } from '@tabler/icons-react';
+import HeaderCard from '../../../ui-component/cards/HeaderCard';
 
 const labelStyles = {
     fontSize: '14px',
@@ -32,7 +33,10 @@ const labelStyles = {
 };
 
 const AttendanceMark = () => {
-    const { loggedUser } = useSelector((state) => state.globalState || {});
+    const { loggedUser, academicYear } = useSelector(state => ({
+        loggedUser: state.globalState?.loggedUser || null,
+        academicYear: state.globalState?.academicYear || null
+    }));
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
 
@@ -157,7 +161,7 @@ const AttendanceMark = () => {
         try {
             setLoading(true);
             const response = await customAxios.get(
-                STUDENTS_API_BASE_URL + '/list/inSection/' + loggedUser?.skid + '/' + selectedSection
+                STUDENTS_API_BASE_URL + '/list/inSection/' + loggedUser?.skid + '/' + academicYear?.id + '/' + selectedSection
             );
 
             if (response.data.code === 200 && response.data.status === 'success') {
@@ -176,7 +180,7 @@ const AttendanceMark = () => {
     const checkExistingAttendance = async (studentsList) => {
         try {
             const formattedDate = date.format('YYYY-MM-DD');
-            const response = await customAxios.get(`${ATTENDANCE_API_BASE_URL}/view/${loggedUser?.skid}`, {
+            const response = await customAxios.get(`${ATTENDANCE_API_BASE_URL}/view/${loggedUser?.skid}/${academicYear?.id}`, {
                 params: {
                     class_id: selectedClass,
                     section_id: selectedSection,
@@ -280,7 +284,8 @@ const AttendanceMark = () => {
             const response = await customAxios.post(endpoint, {
                 records: recordsToSubmit,
                 date: date.format('YYYY-MM-DD'),
-                section_id: selectedSection
+                section_id: selectedSection,
+                academic_year_id: academicYear?.id
             });
 
             if (response.data.code === 200) {
@@ -379,19 +384,27 @@ const AttendanceMark = () => {
 
     const summary = getAttendanceSummary();
 
+    const breadcrumbLinks = [
+        { title: 'Dashboard', to: '/dashboard' },
+        { title: 'View Attendance Records', to: '/attendance/view' },
+        {
+            title: (isEditMode ? "Edit Attendance" : "Mark Attendance"),
+            to: (isEditMode ? '/attendance/mark' : '/attendance/mark')
+        },
+    ];
+
     return (
         <>
             <Loader loading={loading} />
-            <MainCard title={
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                    <IconButton onClick={() => navigate(-1)} size="small">
-                        <IconArrowLeft />
-                    </IconButton>
-                    <Typography variant="h4">
-                        Mark Attendance
-                    </Typography>
-                </Box>
-            }>
+            <HeaderCard
+                heading={"Mark Attendance"}
+                breadcrumbLinks={breadcrumbLinks}
+                buttonColor={'primary'}
+                buttonvariant={'variant'}
+                onButtonClick={() => navigate(-1)}
+                buttonIcon={<IconArrowLeft color='white' />}
+            />
+            <MainCard>
                 <Grid container spacing={2} alignItems="flex-end">
                     <Grid item size={{ xl: 3, lg: 3, md: 3, sm: 6, xs: 12 }}>
                         <Stack spacing={1}>

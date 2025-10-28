@@ -14,9 +14,13 @@ import MainCard from '../../../ui-component/cards/MainCard';
 import customAxios from '../../../utils/axiosConfig';
 import { CLASSES_API_BASE_URL, FEES_API_BASE_URL } from '../../../ApiConstants';
 import Loader from '../../../ui-component/Loader';
+import HeaderCard from '../../../ui-component/cards/HeaderCard';
 
 const FeeStructureCreate = () => {
-    const { loggedUser } = useSelector((state) => state.globalState || {});
+    const { loggedUser, academicYear } = useSelector(state => ({
+        loggedUser: state.globalState?.loggedUser || null,
+        academicYear: state.globalState?.academicYear || null
+    }));
     const navigate = useNavigate();
     const { class_id, academic_year } = useParams(); // Get from URL params
     const isEditMode = !!class_id; // If class_id exists, it's edit mode
@@ -27,6 +31,7 @@ const FeeStructureCreate = () => {
         academic_year: academic_year || '2025-26',
         class_id: class_id || '',
     });
+
     const [feeRows, setFeeRows] = useState([
         {
             id: Date.now(),
@@ -48,7 +53,7 @@ const FeeStructureCreate = () => {
         if (isEditMode) {
             fetchExistingFees();
         }
-    }, []);
+    }, [academicYear]);
 
     const fetchClasses = async () => {
         try {
@@ -66,8 +71,13 @@ const FeeStructureCreate = () => {
     const fetchExistingFees = async () => {
         try {
             setLoading(true);
+            const params = {
+                academic_year_id: academicYear?.id,
+                class_id: class_id
+            };
             const response = await customAxios.get(
-                `${FEES_API_BASE_URL}/structure/list/${loggedUser?.skid}?academic_year=${formData.academic_year}&class_id=${class_id}`
+                `${FEES_API_BASE_URL}/structure/list/${loggedUser?.skid}`,
+                { params }
             );
 
             if (response.data.code === 200) {
@@ -296,24 +306,26 @@ const FeeStructureCreate = () => {
 
     const totalAmount = feeRows.reduce((sum, row) => sum + (parseFloat(row.amount) || 0), 0);
 
+    const breadcrumbLinks = [
+        { title: 'Dashboard', to: '/dashboard' },
+        { title: 'Fee Structures', to: '/fee/structures' },
+        { title: (isEditMode ? 'Edit Fee Structure' : 'Create Fee Structure'), to: '/fee/structures' },
+    ];
+
     return (
         <Box>
             <Loader loading={loading} />
+            <HeaderCard
+                heading={isEditMode ? 'Edit Fee Structure' : 'Create Fee Structure'}
+                breadcrumbLinks={breadcrumbLinks}
+                buttonColor={'primary'}
+                buttonvariant={'variant'}
+                onButtonClick={() => navigate('/fee/structures')}
+                buttonIcon={<IconArrowLeft color='white' />}
+            />
 
             {/* Header */}
-            <MainCard
-                title={
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                        <IconButton onClick={() => navigate('/fee/structures')}>
-                            <IconArrowLeft size={20} />
-                        </IconButton>
-                        <Typography variant="h4">
-                            {isEditMode ? 'Edit Fee Structure' : 'Create Fee Structure'}
-                        </Typography>
-                    </Box>
-                }
-                sx={{ mb: 3 }}
-            >
+            <MainCard sx={{ mb: 3 }}>
                 <Typography variant="body2" color="text.secondary">
                     {isEditMode
                         ? 'Update existing fees or add new fees for this class'
@@ -383,7 +395,7 @@ const FeeStructureCreate = () => {
                     dataSource={feeRows}
                     rowKey="id"
                     pagination={false}
-                    // bordered
+                // bordered
                 />
 
                 {/* Total */}
